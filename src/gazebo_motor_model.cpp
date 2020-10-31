@@ -33,6 +33,7 @@ void GazeboMotorModel::InitializeParams() {}
 
 void GazeboMotorModel::Publish() {
   turning_velocity_msg_.set_data(joint_->GetVelocity(0));
+    omega_z = joint_->GetVelocity(0);
   // FIXME: Commented out to prevent warnings about queue limit reached.
   // motor_velocity_pub_->Publish(turning_velocity_msg_);
 }
@@ -197,7 +198,7 @@ void GazeboMotorModel::UpdateForcesAndMoments() {
   if (motor_rot_vel_ / (2 * M_PI) > 1 / (2 * sampling_time_)) {
     gzerr << "Aliasing on motor [" << motor_number_ << "] might occur. Consider making smaller simulation time steps or raising the rotor_velocity_slowdown_sim_ param.\n";
   }
-  double real_motor_velocity = motor_rot_vel_ * rotor_velocity_slowdown_sim_;
+  double real_motor_velocity = omega_z * rotor_velocity_slowdown_sim_;
   double force = real_motor_velocity * std::abs(real_motor_velocity) * motor_constant_;
   if(!reversible_) {
     // Not allowed to have negative thrust.

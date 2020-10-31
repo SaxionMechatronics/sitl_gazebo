@@ -152,7 +152,8 @@ class GazeboMotorModel : public MotorModel, public ModelPlugin {
   common::PID pid_;
   bool use_pid_;
   physics::LinkPtr link_;
-  /// \brief Pointer to the update event connection.
+  double omega_z = 0;
+    /// \brief Pointer to the update event connection.
   event::ConnectionPtr updateConnection_;
 
   boost::thread callback_queue_thread_;
