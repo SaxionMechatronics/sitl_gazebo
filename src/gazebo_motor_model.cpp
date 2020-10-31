@@ -33,6 +33,7 @@ void GazeboMotorModel::InitializeParams() {}
 
 void GazeboMotorModel::Publish() {
   turning_velocity_msg_.set_data(joint_->GetVelocity(0));
+    std::cout << "[MotModel-Publish]omega_z: " << joint_->GetVelocity(0) << std::endl;
     omega_z = joint_->GetVelocity(0);
   // FIXME: Commented out to prevent warnings about queue limit reached.
   // motor_velocity_pub_->Publish(turning_velocity_msg_);
@@ -187,6 +188,7 @@ void GazeboMotorModel::VelocityCallback(CommandMotorSpeedPtr &rot_velocities) {
     std::cout  << "You tried to access index " << motor_number_
       << " of the MotorSpeed message array which is of size " << rot_velocities->motor_speed_size() << "." << std::endl;
   } else ref_motor_rot_vel_ = std::min(static_cast<double>(rot_velocities->motor_speed(motor_number_)), static_cast<double>(max_rot_velocity_));
+//    std::cout << "[MotModel]ref_motor_rot_vel_: " << ref_motor_rot_vel_ << std::endl;
 }
 
 void GazeboMotorModel::MotorFailureCallback(const boost::shared_ptr<const msgs::Int> &fail_msg) {
@@ -195,11 +197,15 @@ void GazeboMotorModel::MotorFailureCallback(const boost::shared_ptr<const msgs::
 
 void GazeboMotorModel::UpdateForcesAndMoments() {
   motor_rot_vel_ = joint_->GetVelocity(0);
+  std::cout << "[MotModel-UpdateFM]motor_rot_vel_: " << joint_->GetVelocity(0) << std::endl;
   if (motor_rot_vel_ / (2 * M_PI) > 1 / (2 * sampling_time_)) {
     gzerr << "Aliasing on motor [" << motor_number_ << "] might occur. Consider making smaller simulation time steps or raising the rotor_velocity_slowdown_sim_ param.\n";
   }
   double real_motor_velocity = omega_z * rotor_velocity_slowdown_sim_;
   double force = real_motor_velocity * std::abs(real_motor_velocity) * motor_constant_;
+//    std::cout << "[MotModel]motorConstant: " << motor_constant_ << std::endl;
+//    std::cout << "[MotModel]real_motor_velocity: " << real_motor_velocity << std::endl;
+//    std::cout << "[MotModel]force: " << force << std::endl;
   if(!reversible_) {
     // Not allowed to have negative thrust.
     force = std::abs(force);
