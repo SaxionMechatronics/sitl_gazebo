@@ -1096,6 +1096,14 @@ void GazeboMavlinkInterface::handle_actuator_controls() {
     if (armed) {
       input_reference_[i] = (actuator_controls[input_index_[i]] + input_offset_[i])
           * input_scaling_[i] + zero_position_armed_[i];
+//        if (i <6) {
+//            std::cout << i << ": input_scaling_: " << input_scaling_[i] << ", input_offset:" << input_offset_[i]
+//                      << std::endl;
+//            std::cout << "zero_position_armed: " << zero_position_armed_[i] << ", input_reference:"
+//                      << input_reference_[i] << std::endl;
+//            std::cout << "actuator_controls: " << actuator_controls[input_index_[i]] << std::endl;
+//        }
+//        if (i <6) {std::cout << "[" << i << "]" << input_reference_[i]<<std::endl;}
       // std::cout << input_reference_ << ", ";
     } else {
       input_reference_[i] = zero_position_disarmed_[i];

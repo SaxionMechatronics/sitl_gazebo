@@ -33,7 +33,7 @@ void GazeboMotorModel::InitializeParams() {}
 
 void GazeboMotorModel::Publish() {
   turning_velocity_msg_.set_data(joint_->GetVelocity(0));
-    std::cout << "[MotModel-Publish]omega_z: " << joint_->GetVelocity(0) << std::endl;
+//    std::cout << "[MotModel-Publish]omega_z: " << joint_->GetVelocity(0) << std::endl;
     omega_z = joint_->GetVelocity(0);
   // FIXME: Commented out to prevent warnings about queue limit reached.
   // motor_velocity_pub_->Publish(turning_velocity_msg_);
@@ -197,7 +197,7 @@ void GazeboMotorModel::MotorFailureCallback(const boost::shared_ptr<const msgs::
 
 void GazeboMotorModel::UpdateForcesAndMoments() {
   motor_rot_vel_ = joint_->GetVelocity(0);
-  std::cout << "[MotModel-UpdateFM]motor_rot_vel_: " << joint_->GetVelocity(0) << std::endl;
+//  std::cout << "[MotModel-UpdateFM]motor_rot_vel_: " << joint_->GetVelocity(0) << std::endl;
   if (motor_rot_vel_ / (2 * M_PI) > 1 / (2 * sampling_time_)) {
     gzerr << "Aliasing on motor [" << motor_number_ << "] might occur. Consider making smaller simulation time steps or raising the rotor_velocity_slowdown_sim_ param.\n";
   }
