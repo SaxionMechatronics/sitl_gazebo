@@ -1,0 +1,187 @@
+<sdf version='1.7'>
+  <model name='m4e_mani'>
+    <!-- <joint name='fixed' type='fixed'>
+      <pose relative_to='__model__'>0 0 0.002 1.5708 -0 0</pose>
+      <parent>world</parent>
+      <child>link1</child>
+    </joint> -->
+    <link name='link1'>
+      <pose>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>0.141134</mass>
+        <inertia>
+          <ixx>0.0001747</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.0003488</iyy>
+          <iyz>0</iyz>
+          <izz>0.0001747</izz>
+        </inertia>
+      </inertial>
+      <visual name='link1_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://m4e_mani/meshes/link1.dae</uri>
+          </mesh>
+        </geometry>
+        <material>
+          <script>
+            <name>Gazebo/Orange</name>
+            <uri>file://media/materials/scripts/gazebo.material</uri>
+          </script>
+        </material>
+      </visual>
+    </link>
+    <joint name='joint1' type='revolute'>
+      <pose relative_to='link1'>0 0.003 0 0 1.5708 0</pose>
+      <parent>link1</parent>
+      <child>link2</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <damping>0.7</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link2'>
+      <pose relative_to='joint1'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0.0014 0 0 -0 0</pose>
+        <mass>1.06637</mass>
+        <inertia>
+          <ixx>0.001663</ixx>
+          <ixy>-2.18382e-05</ixy>
+          <ixz>-2.18382e-05</ixz>
+          <iyy>0.001855</iyy>
+          <iyz>-3.62233e-06</iyz>
+          <izz>0.002551</izz>
+        </inertia>
+      </inertial>
+      <visual name='link2_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://m4e_mani/meshes/link2.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='joint2' type='revolute'>
+      <pose relative_to='link2'>0 0.075 0 0 -0 0</pose>
+      <parent>link2</parent>
+      <child>link3</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>-1.5708</lower>
+          <upper>1.5708</upper>
+          <effort>30</effort>
+          <velocity>1</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.7</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link3'>
+      <pose relative_to='joint2'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0.2587 0 0 -0 0</pose>
+        <mass>0.363477</mass>
+        <inertia>
+          <ixx>0.01032</ixx>
+          <ixy>-0.0001221</ixy>
+          <ixz>0</ixz>
+          <iyy>0.000222</iyy>
+          <iyz>0</iyz>
+          <izz>0.01038</izz>
+        </inertia>
+      </inertial>
+      <collision name='link3_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://m4e_mani/meshes/link3.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='link3_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://m4e_mani/meshes/link3.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='joint3' type='revolute'>
+      <pose relative_to='link3'>0 0.4 0 0 -0 0</pose>
+      <parent>link3</parent>
+      <child>link4</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>-1.9</lower>
+          <upper>2.6</upper>
+          <effort>30</effort>
+          <velocity>1</velocity>
+        </limit>
+        <dynamics>
+          <damping>0.7</damping>
+          <friction>0</friction>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='link4'>
+      <pose relative_to='joint3'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0.2 0 0 -0 0</pose>
+        <mass>0.113791</mass>
+        <inertia>
+          <ixx>0.003351</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>0.003336</iyy>
+          <iyz>0</iyz>
+          <izz>3.30137e-05</izz>
+        </inertia>
+      </inertial>
+      <collision name='link4_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://m4e_mani/meshes/link4.stl</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='link4_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://m4e_mani/meshes/link4.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
