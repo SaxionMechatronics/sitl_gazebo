@@ -1,0 +1,368 @@
+<?xml version="1.0" ?>
+<robot name="sarax_plus">
+  <joint name="mani_fixed" type="revolute">
+    <parent link="link1"/>
+    <child link="link2"/>
+    <origin xyz="0    -0.002 -0.003" rpy="-1.57079  0      -1.5708"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="mani_joint_1" type="revolute">
+    <parent link="link2"/>
+    <child link="link3"/>
+    <origin xyz="0      0.07199 0" rpy="3.14159 -1.57079  3.14159"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.5708" upper="1.5708" effort="30.0" velocity="1.0"/>
+  </joint>
+  <joint name="mani_joint_2" type="revolute">
+    <parent link="link3"/>
+    <child link="link4"/>
+    <origin xyz="0    0.325 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.9" upper="2.6" effort="30.0" velocity="1.0"/>
+  </joint>
+  <joint name="ar_mani_fixed" type="fixed">
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <origin xyz="0    0    0.002" rpy="1.5708 0     0"/>
+    <axis xyz="0 0 0"/>
+    <limit lower="0" upper="0" effort="0" velocity="0"/>
+  </joint>
+  <joint name="/imu_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="/imu_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="0.0" upper="0.0" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="rotor_1_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="rotor_1"/>
+    <origin xyz="0.3181 -0.3181  0.045" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="rotor_2_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="rotor_2"/>
+    <origin xyz="0.3181 0.3181 0.045" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="rotor_3_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="rotor_3"/>
+    <origin xyz="-0.3181  0.3181  0.045" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="rotor_4_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="rotor_4"/>
+    <origin xyz="-0.3181 -0.3181  0.045" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="rotor_5_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="rotor_5"/>
+    <origin xyz="0.3181  0.3181 -0.045" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="rotor_6_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="rotor_6"/>
+    <origin xyz="0.3181 -0.3181 -0.045" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="rotor_7_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="rotor_7"/>
+    <origin xyz="-0.3181 -0.3181 -0.045" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <joint name="rotor_8_joint" type="revolute">
+    <parent link="base_link"/>
+    <child link="rotor_8"/>
+    <origin xyz="-0.3181  0.3181 -0.045" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1e+16" upper="1e+16" effort="0.0" velocity="0.0"/>
+  </joint>
+  <link name="base_link">
+    <inertial>
+      <mass value="5.7"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.2" ixy="0" ixz="0" iyy="0.2" iyz="0" izz="0.3"/>
+    </inertial>
+    <collision name="base_link_inertia_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.47 0.47 0.4"/>
+      </geometry>
+    </collision>
+    <visual name="base_link_inertia_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris.stl OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris.stl OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris.stl" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="link1">
+    <inertial>
+      <mass value="0.141134"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="0.0001747" ixy="0" ixz="0" iyy="0.0003488" iyz="0" izz="0.0001747"/>
+    </inertial>
+    <visual name="link1_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/m4e_mani/meshes/link1.dae OR m4e_mani_description/meshes/link1.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="link2">
+    <inertial>
+      <mass value="1.06637"/>
+      <origin xyz="0     0.0014 0" rpy="0 0 0"/>
+      <inertia ixx="0.001663" ixy="-2.18382e-05" ixz="-2.18382e-05" iyy="0.001855" iyz="-3.62233e-06" izz="0.002551"/>
+    </inertial>
+    <visual name="link2_visual">
+      <origin xyz="0    -0.003  0" rpy="3.14159 -1.57079  3.14159"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/m4e_mani/meshes/link2.dae OR m4e_mani_description/meshes/link2.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="link3">
+    <inertial>
+      <mass value="0.363477"/>
+      <origin xyz="0     0.2587 0" rpy="0 0 0"/>
+      <inertia ixx="0.01032" ixy="-0.0001221" ixz="0" iyy="0.000222" iyz="0" izz="0.01038"/>
+    </inertial>
+    <collision name="link3_collision">
+      <origin xyz="0    -0.075  0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/m4e_mani/meshes/link3.stl OR m4e_mani_description/meshes/link3.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <visual name="link3_visual">
+      <origin xyz="0    -0.075  0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/m4e_mani/meshes/link3.dae OR m4e_mani_description/meshes/link3.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="link4">
+    <inertial>
+      <mass value="0.113791"/>
+      <origin xyz="0  0.2 0" rpy="0 0 0"/>
+      <inertia ixx="0.003351" ixy="0" ixz="0" iyy="0.003336" iyz="0" izz="3.30137e-05"/>
+    </inertial>
+    <collision name="link4_collision">
+      <origin xyz="0  -0.4  0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/m4e_mani/meshes/link4.stl OR m4e_mani_description/meshes/link4.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <visual name="link4_visual">
+      <origin xyz="0  -0.4  0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/m4e_mani/meshes/link4.dae OR m4e_mani_description/meshes/link4.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="/imu_link">
+    <inertial>
+      <mass value="0.015"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-05" ixy="0" ixz="0" iyy="1e-05" iyz="0" izz="1e-05"/>
+    </inertial>
+  </link>
+  <link name="rotor_1">
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="9.75e-07" ixy="0" ixz="0" iyy="0.000273104" iyz="0" izz="0.000274004"/>
+    </inertial>
+    <collision name="rotor_1_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.23" length="0.005"/>
+      </geometry>
+    </collision>
+    <visual name="rotor_1_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/tailsitter/meshes/iris_prop_ccw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/tiltrotor/meshes/iris_prop_ccw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris_prop_ccw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris_prop_ccw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris_prop_ccw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/standard_vtol/meshes/iris_prop_ccw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/plane/meshes/iris_prop_ccw.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="rotor_2">
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="9.75e-07" ixy="0" ixz="0" iyy="0.000273104" iyz="0" izz="0.000274004"/>
+    </inertial>
+    <collision name="rotor_2_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.23" length="0.005"/>
+      </geometry>
+    </collision>
+    <visual name="rotor_2_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/tailsitter/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/tiltrotor/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/standard_vtol/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/plane/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="rotor_3">
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="9.75e-07" ixy="0" ixz="0" iyy="0.000273104" iyz="0" izz="0.000274004"/>
+    </inertial>
+    <collision name="rotor_3_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.23" length="0.005"/>
+      </geometry>
+    </collision>
+    <visual name="rotor_3_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/tailsitter/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/tiltrotor/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/standard_vtol/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/plane/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="rotor_4">
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="9.75e-07" ixy="0" ixz="0" iyy="0.000273104" iyz="0" izz="0.000274004"/>
+    </inertial>
+    <collision name="rotor_4_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.23" length="0.005"/>
+      </geometry>
+    </collision>
+    <visual name="rotor_4_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/tailsitter/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/tiltrotor/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/standard_vtol/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/plane/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="rotor_5">
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="9.75e-07" ixy="0" ixz="0" iyy="0.000273104" iyz="0" izz="0.000274004"/>
+    </inertial>
+    <collision name="rotor_5_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.23" length="0.005"/>
+      </geometry>
+    </collision>
+    <visual name="rotor_5_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/tailsitter/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/tiltrotor/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/standard_vtol/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/plane/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="rotor_6">
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="9.75e-07" ixy="0" ixz="0" iyy="0.000273104" iyz="0" izz="0.000274004"/>
+    </inertial>
+    <collision name="rotor_6_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.23" length="0.005"/>
+      </geometry>
+    </collision>
+    <visual name="rotor_6_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/tailsitter/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/tiltrotor/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/standard_vtol/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/plane/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="rotor_7">
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="9.75e-07" ixy="0" ixz="0" iyy="0.000273104" iyz="0" izz="0.000274004"/>
+    </inertial>
+    <collision name="rotor_7_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.23" length="0.005"/>
+      </geometry>
+    </collision>
+    <visual name="rotor_7_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/tailsitter/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/tiltrotor/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/standard_vtol/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/plane/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+  <link name="rotor_8">
+    <inertial>
+      <mass value="0.005"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="9.75e-07" ixy="0" ixz="0" iyy="0.000273104" iyz="0" izz="0.000274004"/>
+    </inertial>
+    <collision name="rotor_8_collision">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.23" length="0.005"/>
+      </geometry>
+    </collision>
+    <visual name="rotor_8_visual">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://PX4-Autopilot/Tools/sitl_gazebo/models/tailsitter/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/tiltrotor/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/iris/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/sarax_plus/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/standard_vtol/meshes/iris_prop_cw.dae OR PX4-Autopilot/Tools/sitl_gazebo/models/plane/meshes/iris_prop_cw.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+  </link>
+    <!-- <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="joint1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission> -->
+
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="mani_joint_1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="mani_joint_2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+</robot>

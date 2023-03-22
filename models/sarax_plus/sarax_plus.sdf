@@ -82,7 +82,7 @@
         </material>
       </visual>
     </link>
-    <joint name='joint1' type='revolute'>
+    <joint name='mani_fixed' type='fixed'>
       <pose relative_to='link1'>0 0.003 0 0 1.5708 0</pose>
       <parent>link1</parent>
       <child>link2</child>
@@ -101,7 +101,7 @@
       </axis>
     </joint>
     <link name='link2'>
-      <pose relative_to='joint1'>0 0 0 0 -0 0</pose>
+      <pose relative_to='mani_fixed'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0.0014 0 0 -0 0</pose>
         <mass>1.06637</mass>
@@ -124,7 +124,7 @@
         </geometry>
       </visual>
     </link>
-    <joint name='joint2' type='revolute'>
+    <joint name='mani_joint_1' type='revolute'>
       <pose relative_to='link2'>0 0.075 0 0 -0 0</pose>
       <parent>link2</parent>
       <child>link3</child>
@@ -145,7 +145,7 @@
       </axis>
     </joint>
     <link name='link3'>
-      <pose relative_to='joint2'>0 0 0 0 -0 0</pose>
+      <pose relative_to='mani_joint_1'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0.2587 0 0 -0 0</pose>
         <mass>0.363477</mass>
@@ -177,7 +177,7 @@
         </geometry>
       </visual>
     </link>
-    <joint name='joint3' type='revolute'>
+    <joint name='mani_joint_2' type='revolute'>
       <pose relative_to='link3'>0 0.4 0 0 -0 0</pose>
       <parent>link3</parent>
       <child>link4</child>
@@ -198,7 +198,7 @@
       </axis>
     </joint>
     <link name='link4'>
-      <pose relative_to='joint3'>0 0 0 0 -0 0</pose>
+      <pose relative_to='mani_joint_2'>0 0 0 0 -0 0</pose>
       <inertial>
         <pose>0 0.2 0 0 -0 0</pose>
         <mass>0.113791</mass>
@@ -231,9 +231,9 @@
       </visual>
     </link>
     <plugin name='gazebo_ros_control' filename='libgazebo_ros_control.so'>
-      <robotNamespace>/m4e_mani</robotNamespace>
+      <robotNamespace>/sarax_mani</robotNamespace>
       <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-      <robotParam>/m4e_mani_robot_description</robotParam>
+      <robotParam>/sarax_mani_robot_description</robotParam>
     </plugin>
 
     <joint name="ar_mani_fixed" type="fixed">
