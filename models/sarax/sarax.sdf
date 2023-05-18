@@ -4,7 +4,7 @@
       <pose>0 0 0 0 0 0</pose>
       <inertial>
         <pose>0 0 0 0 0 0</pose>
-        <mass>5.7</mass>
+        <mass>9.5</mass>
         <inertia>
           <ixx>0.2</ixx>
           <ixy>0</ixy>
@@ -43,7 +43,7 @@
         </geometry>
         <material>
           <script>
-            <name>Gazebo/DarkGrey</name>
+            <name>Gazebo/White</name>
             <uri>file://media/materials/scripts/gazebo.material</uri>
           </script>
         </material>
@@ -125,7 +125,7 @@
         </geometry>
         <material>
           <script>
-            <name>Gazebo/DarkGrey</name>
+            <name>Gazebo/Blue</name>
             <uri>file://media/materials/scripts/gazebo.material</uri>
           </script>
         </material>
@@ -685,7 +685,7 @@
       <timeConstantUp>0.0125</timeConstantUp>
       <timeConstantDown>0.025</timeConstantDown>
       <maxRotVelocity>730</maxRotVelocity>
-      <motorConstant>9.68e-05</motorConstant>
+      <motorConstant>5.8e-5</motorConstant>
       <momentConstant>0.0202</momentConstant>
       <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
       <motorNumber>4</motorNumber>
@@ -702,7 +702,7 @@
       <timeConstantUp>0.0125</timeConstantUp>
       <timeConstantDown>0.025</timeConstantDown>
       <maxRotVelocity>730</maxRotVelocity>
-      <motorConstant>9.68e-05</motorConstant>
+      <motorConstant>5.8e-5</motorConstant>
       <momentConstant>0.0202</momentConstant>
       <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
       <motorNumber>5</motorNumber>
@@ -719,7 +719,7 @@
       <timeConstantUp>0.0125</timeConstantUp>
       <timeConstantDown>0.025</timeConstantDown>
       <maxRotVelocity>730</maxRotVelocity>
-      <motorConstant>9.68e-05</motorConstant>
+      <motorConstant>5.8e-5</motorConstant>
       <momentConstant>0.0202</momentConstant>
       <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
       <motorNumber>6</motorNumber>
@@ -736,7 +736,7 @@
       <timeConstantUp>0.0125</timeConstantUp>
       <timeConstantDown>0.025</timeConstantDown>
       <maxRotVelocity>730</maxRotVelocity>
-      <motorConstant>9.68e-05</motorConstant>
+      <motorConstant>5.8e-5</motorConstant>
       <momentConstant>0.0202</momentConstant>
       <commandSubTopic>/gazebo/command/motor_speed</commandSubTopic>
       <motorNumber>7</motorNumber>
