@@ -95,7 +95,7 @@ void GazeboMavlinkInterface::CreateSensorSubscription(
 #if GAZEBO_MAJOR_VERSION >= 9
     const auto sensor_orientation = nested_model->RelativePose().Rot();
 #else
-    const auto sensor_orientation = nested_model->GetChild()->GetRelativePose()).Rot();
+    const auto sensor_orientation = nested_model->GetChild()->GetRelativePose().Rot();
 #endif
 
     // One map will be created for each Gazebo message type
@@ -211,6 +211,8 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
       opticalFlow_sub_topic_, opticalFlow_sub_topic_);
   getSdfParam<std::string>(_sdf, "irlockSubTopic", irlock_sub_topic_, irlock_sub_topic_);
   getSdfParam<std::string>(_sdf, "magSubTopic", mag_sub_topic_, mag_sub_topic_);
+  getSdfParam<std::string>(_sdf, "targetGpsSubTopic", target_gps_sub_topic_, target_gps_sub_topic_);
+  getSdfParam<std::string>(_sdf, "arucoMarkerSubTopic", arucoMarker_sub_topic_, arucoMarker_sub_topic_);
   getSdfParam<std::string>(_sdf, "baroSubTopic", baro_sub_topic_, baro_sub_topic_);
   getSdfParam<std::string>(_sdf, "groundtruthSubTopic", groundtruth_sub_topic_, groundtruth_sub_topic_);
 
@@ -421,6 +423,8 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
   imu_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + imu_sub_topic_, &GazeboMavlinkInterface::ImuCallback, this);
   opticalFlow_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + opticalFlow_sub_topic_, &GazeboMavlinkInterface::OpticalFlowCallback, this);
   irlock_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + irlock_sub_topic_, &GazeboMavlinkInterface::IRLockCallback, this);
+  target_gps_sub_ = node_handle_->Subscribe("~/" + target_gps_sub_topic_, &GazeboMavlinkInterface::TargetGpsCallback, this);
+  arucoMarker_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + arucoMarker_sub_topic_, &GazeboMavlinkInterface::targetReleativeCallback, this);
   groundtruth_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + groundtruth_sub_topic_, &GazeboMavlinkInterface::GroundtruthCallback, this);
   vision_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + vision_sub_topic_, &GazeboMavlinkInterface::VisionCallback, this);
   mag_sub_ = node_handle_->Subscribe("~/" + model_->GetName() + mag_sub_topic_, &GazeboMavlinkInterface::MagnetometerCallback, this);
@@ -554,18 +558,16 @@ void GazeboMavlinkInterface::Load(physics::ModelPtr _model, sdf::ElementPtr _sdf
 // This gets called by the world update start event.
 void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo&  /*_info*/) {
 
-  std::unique_lock<std::mutex> lock(last_imu_message_mutex_);
+  std::unique_lock<std::mutex> lock(imu_received_mutex_);
 
-  if (previous_imu_seq_ > 0) {
-    while (previous_imu_seq_ == last_imu_message_.seq() && IsRunning()) {
-      last_imu_message_cond_.wait_for(lock, std::chrono::milliseconds(10));
+  if (imu_received_once_) {
+    while (!imu_received_ && IsRunning()) {
+      imu_received_cond_.wait_for(lock, std::chrono::milliseconds(10));
     }
   }
-
-  previous_imu_seq_ = last_imu_message_.seq();
-
+  imu_received_ = false;
   // Always run at 250 Hz. At 500 Hz, the skip factor should be 2, at 1000 Hz 4.
-  if (!(previous_imu_seq_ % update_skip_factor_ == 0)) {
+  if (!(update_counter_++ % update_skip_factor_ == 0)) {
     return;
   }
 
@@ -597,7 +599,7 @@ void GazeboMavlinkInterface::OnUpdate(const common::UpdateInfo&  /*_info*/) {
   // Always send Gyro and Accel data at full rate (= sim update rate)
   SendSensorMessages();
 
-  // Send groudntruth at full rate
+  // Send groundtruth at full rate
   SendGroundTruth();
 
   if (close_conn_) { // close connection if required
@@ -653,27 +655,45 @@ void GazeboMavlinkInterface::setMavlinkSensorOrientation(const ignition::math::V
 
 void GazeboMavlinkInterface::ImuCallback(ImuPtr& imu_message)
 {
-  std::unique_lock<std::mutex> lock(last_imu_message_mutex_);
+  std::unique_lock<std::mutex> lock(imu_received_mutex_);
 
-  const int64_t diff = imu_message->seq() - last_imu_message_.seq();
+  const int64_t diff = imu_message->seq() - last_imu_message_seq_;
   if (diff != 1 && imu_message->seq() != 0)
   {
     gzerr << "Skipped " << (diff - 1) << " IMU samples (presumably CPU usage is too high)\n";
   }
 
-  last_imu_message_ = *imu_message;
+  last_imu_message_seq_ = imu_message->seq();
+
+  ignition::math::Quaterniond q_gr = ignition::math::Quaterniond(
+    imu_message->orientation().w(),
+    imu_message->orientation().x(),
+    imu_message->orientation().y(),
+    imu_message->orientation().z());
+
+  ignition::math::Vector3d accel_b = q_FLU_to_FRD.RotateVector(ignition::math::Vector3d(
+    imu_message->linear_acceleration().x(),
+    imu_message->linear_acceleration().y(),
+    imu_message->linear_acceleration().z()));
+
+  ignition::math::Vector3d gyro_b = q_FLU_to_FRD.RotateVector(ignition::math::Vector3d(
+    imu_message->angular_velocity().x(),
+    imu_message->angular_velocity().y(),
+    imu_message->angular_velocity().z()));
+
+  SensorData::Imu imu_data;
+  imu_data.accel_b = Eigen::Vector3d(accel_b.X(), accel_b.Y(), accel_b.Z());
+  imu_data.gyro_b = Eigen::Vector3d(gyro_b.X(), gyro_b.Y(), gyro_b.Z());
+  mavlink_interface_->UpdateIMU(imu_data);
+
+  imu_received_ = true;
+  imu_received_once_ = true;
   lock.unlock();
-  last_imu_message_cond_.notify_one();
+  imu_received_cond_.notify_one();
 }
 
 void GazeboMavlinkInterface::SendSensorMessages()
 {
-  ignition::math::Quaterniond q_gr = ignition::math::Quaterniond(
-    last_imu_message_.orientation().w(),
-    last_imu_message_.orientation().x(),
-    last_imu_message_.orientation().y(),
-    last_imu_message_.orientation().z());
-
   bool should_send_imu = false;
   if (!enable_lockstep_) {
 #if GAZEBO_MAJOR_VERSION >= 9
@@ -695,35 +715,18 @@ void GazeboMavlinkInterface::SendSensorMessages()
   uint64_t time_usec = std::llround(world_->GetSimTime().Double() * 1e6);
 #endif
 
-  // send always accel and gyro data (not dependent of the bitmask)
-  // required so to keep the timestamps on sync and the lockstep can
-  // work properly
-  ignition::math::Vector3d accel_b = q_FLU_to_FRD.RotateVector(ignition::math::Vector3d(
-    last_imu_message_.linear_acceleration().x(),
-    last_imu_message_.linear_acceleration().y(),
-    last_imu_message_.linear_acceleration().z()));
-
-  ignition::math::Vector3d gyro_b = q_FLU_to_FRD.RotateVector(ignition::math::Vector3d(
-    last_imu_message_.angular_velocity().x(),
-    last_imu_message_.angular_velocity().y(),
-    last_imu_message_.angular_velocity().z()));
-
-  SensorData::Imu imu_data;
-  imu_data.accel_b = Eigen::Vector3d(accel_b.X(), accel_b.Y(), accel_b.Z());
-  imu_data.gyro_b = Eigen::Vector3d(gyro_b.X(), gyro_b.Y(), gyro_b.Z());
-  mavlink_interface_->UpdateIMU(imu_data);
-
   mavlink_interface_->SendSensorMessages(time_usec);
 }
 
 void GazeboMavlinkInterface::SendGroundTruth()
 {
   // ground truth
-  ignition::math::Quaterniond q_gr = ignition::math::Quaterniond(
-    last_imu_message_.orientation().w(),
-    last_imu_message_.orientation().x(),
-    last_imu_message_.orientation().y(),
-    last_imu_message_.orientation().z());
+  #if GAZEBO_MAJOR_VERSION >= 9
+    ignition::math::Pose3d pose_gr = model_->WorldPose();
+  #else
+    ignition::math::Pose3d pose_gr = ignitionFromGazeboMath(model_->GetWorldPose());
+  #endif
+  ignition::math::Quaterniond q_gr = pose_gr.Rot();
 
   ignition::math::Quaterniond q_FLU_to_NED = q_ENU_to_NED * q_gr;
   ignition::math::Quaterniond q_nb = q_FLU_to_NED * q_FLU_to_FRD.Inverse();
@@ -939,18 +942,81 @@ void GazeboMavlinkInterface::SonarCallback(SonarPtr& sonar_message, const int& i
 }
 
 void GazeboMavlinkInterface::IRLockCallback(IRLockPtr& irlock_message) {
+
   mavlink_landing_target_t sensor_msg;
-  sensor_msg.time_usec = irlock_message->time_usec() / 1e3;
+  sensor_msg.time_usec = irlock_message->time_usec();
   sensor_msg.target_num = irlock_message->signature();
   sensor_msg.angle_x = irlock_message->pos_x();
   sensor_msg.angle_y = irlock_message->pos_y();
   sensor_msg.size_x = irlock_message->size_x();
   sensor_msg.size_y = irlock_message->size_y();
+  sensor_msg.q[0] = irlock_message->q_w();
+  sensor_msg.q[1] = irlock_message->q_x();
+  sensor_msg.q[2] = irlock_message->q_y();
+  sensor_msg.q[3] = irlock_message->q_z();
   sensor_msg.position_valid = false;
   sensor_msg.type = LANDING_TARGET_TYPE_LIGHT_BEACON;
 
   mavlink_message_t msg;
   mavlink_msg_landing_target_encode_chan(1, 200, MAVLINK_COMM_0, &msg, &sensor_msg);
+  mavlink_interface_->send_mavlink_message(&msg);
+}
+
+void GazeboMavlinkInterface::targetReleativeCallback(TargetRelativePtr& targetRelative_message) {
+  
+  mavlink_target_relative_t sensor_msg;
+  sensor_msg.timestamp = targetRelative_message->time_usec();
+  sensor_msg.x = targetRelative_message->pos_x();
+  sensor_msg.y = targetRelative_message->pos_y();
+  sensor_msg.z = targetRelative_message->pos_z();
+
+  sensor_msg.type = LANDING_TARGET_TYPE_VISION_FIDUCIAL;
+  sensor_msg.frame = TARGET_OBS_FRAME_BODY_FRD;
+
+  sensor_msg.q_sensor[0] = targetRelative_message->attitude_q_w();
+  sensor_msg.q_sensor[1] = targetRelative_message->attitude_q_x();
+  sensor_msg.q_sensor[2] = targetRelative_message->attitude_q_y();
+  sensor_msg.q_sensor[3] = targetRelative_message->attitude_q_z();
+
+  sensor_msg.pos_std[0] = targetRelative_message->std_x();
+  sensor_msg.pos_std[1] = targetRelative_message->std_y();
+  sensor_msg.pos_std[2] = targetRelative_message->std_z();
+
+  sensor_msg.q_target[0] = targetRelative_message->orientation_q_w();
+  sensor_msg.q_target[1] = targetRelative_message->orientation_q_x();
+  sensor_msg.q_target[2] = targetRelative_message->orientation_q_y();
+  sensor_msg.q_target[3] = targetRelative_message->orientation_q_z();
+
+  sensor_msg.yaw_std = targetRelative_message->yaw_std();
+
+  mavlink_message_t msg;
+  mavlink_msg_target_relative_encode_chan(1, 200, MAVLINK_COMM_0, &msg, &sensor_msg);
+  mavlink_interface_->send_mavlink_message(&msg);
+}
+
+void GazeboMavlinkInterface::TargetGpsCallback(GpsPtr& gps_msg) {
+
+  mavlink_target_absolute_t gps_data;
+
+  gps_data.timestamp = gps_msg->time_usec();
+  gps_data.lat = gps_msg->latitude_deg() * 1e7;
+  gps_data.lon = gps_msg->longitude_deg() * 1e7;
+  gps_data.alt = gps_msg->altitude();
+  gps_data.position_std[0] = gps_msg->eph();
+  gps_data.position_std[1] = gps_msg->epv();
+  gps_data.vel[0] = gps_msg->velocity_north();
+  gps_data.vel[1] = gps_msg->velocity_east();
+  gps_data.vel[2] = -gps_msg->velocity_up();
+
+  gps_data.vel_std[0] = 0.2;
+  gps_data.vel_std[1] = 0.2;
+  gps_data.vel_std[2] = 0.5;
+
+  // Position and velocity estimation
+  gps_data.sensor_capabilities = 3;
+
+  mavlink_message_t msg;
+  mavlink_msg_target_absolute_encode_chan(1, 200, MAVLINK_COMM_0, &msg, &gps_data);
   mavlink_interface_->send_mavlink_message(&msg);
 }
 
