@@ -15,10 +15,10 @@
         </inertia>
       </inertial>
       <collision name='base_link_inertia_collision'>
-        <pose>0 0 -0.2 0 0 0</pose>
+        <pose>0 0 -0.3 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.46 0.46 0.46</size>
+            <size>0.46 0.46 0.26</size>
           </box>
         </geometry>
         <surface>
@@ -86,19 +86,6 @@
       <pose relative_to='link1'>0 0.003 0 0 1.5708 0</pose>
       <parent>link1</parent>
       <child>link2</child>
-      <axis>
-        <xyz>0 1 0</xyz>
-        <limit>
-          <lower>-1e+16</lower>
-          <upper>1e+16</upper>
-        </limit>
-        <dynamics>
-          <damping>0.7</damping>
-          <friction>0</friction>
-          <spring_reference>0</spring_reference>
-          <spring_stiffness>0</spring_stiffness>
-        </dynamics>
-      </axis>
     </joint>
     <link name='link2'>
       <pose relative_to='mani_fixed'>0 0 0 0 0 0</pose>
@@ -157,14 +144,6 @@
           <izz>0.01038</izz>
         </inertia>
       </inertial>
-      <collision name='link3_collision'>
-        <pose>0 0.2 0 0 0 0</pose>
-        <geometry>
-          <box>
-            <size>0.03 0.4 0.03</size>
-          </box>
-        </geometry>
-      </collision>
       <visual name='link3_visual'>
         <pose>0 0 0 0 0 0</pose>
         <geometry>
@@ -212,7 +191,7 @@
         <pose>0 0.2 0 0 0 0</pose>
         <geometry>
           <box>
-            <size>0.03 0.4 0.03</size>
+            <size>0.025 0.48 0.03</size>
           </box>
         </geometry>
       </collision>
